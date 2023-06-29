@@ -71,4 +71,10 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.area--active {
+  background-color: #ffffff;
+  transform: scale(1.05);
 }
