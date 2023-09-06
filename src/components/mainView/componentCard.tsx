@@ -3,12 +3,8 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import reducerHook from "./hookReducer";
 import { useReducer } from "react";
-import getUrl from "@/services/uploadImage";
-
-enum FileTypes {
-  Jpeg = "image/jpeg",
-  Png = "image/png",
-}
+import { useRouter, useSearchParams } from "next/navigation";
+import { getFile } from "./utils";
 
 export const MainCard = () => {
   const [data, dispatch] = useReducer(reducerHook, {
@@ -16,12 +12,13 @@ export const MainCard = () => {
     file: null,
     isDragging: false,
   });
-  // console.log(location.origin);
+  const router = useRouter();
+  const searchParams = useSearchParams()!;
+
   // onDragEnter sets inDropZone to true
   const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("enter to the zone");
     dispatch({
       type: "SET_IS_DRAGGING",
       dropped: false,
@@ -34,7 +31,6 @@ export const MainCard = () => {
   const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("leave the zone");
     dispatch({
       type: "SET_IS_DRAGGING",
       isDragging: false,
@@ -57,12 +53,22 @@ export const MainCard = () => {
   const handleDrop = async (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(e.dataTransfer.files);
     // get files from event on the dataTransfer object as an array
-    const fileUploded = e.dataTransfer.files;
+    const fileUploaded = e.dataTransfer.files;
 
     // ensure a file or files are dropped
-    if (!fileUploded) {
+    if (!fileUploaded) {
+      dispatch({
+        type: "SET_IN_DROP_ZONE",
+        isDragging: false,
+        file: null,
+        dropped: false,
+      });
+      return;
+    }
+    const response = await getFile(fileUploaded, searchParams.toString());
+
+    if (response.error) {
       dispatch({
         type: "SET_IN_DROP_ZONE",
         isDragging: false,
@@ -72,33 +78,49 @@ export const MainCard = () => {
       return;
     }
 
-    if (
-      (fileUploded.length > 0 && fileUploded[0]?.type === FileTypes.Jpeg) ||
-      fileUploded[0]?.type === FileTypes.Png
-    ) {
-      // loop over existing files
-      const newFormData = new FormData();
-      newFormData.append("file", fileUploded[0]);
-      console.log(newFormData);
-      // dispatch action to add droped file or files to fileList
-      const dat = await getUrl(newFormData);
-      console.log(dat);
-      dispatch({
-        type: "SET_IN_DROP_ZONE",
-        isDragging: false,
-        file: fileUploded[0],
-        dropped: true,
-      });
-      console.log("drop the zone");
-      // reset inDropZone to false
-      // dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
-    }
     dispatch({
       type: "SET_IN_DROP_ZONE",
       isDragging: false,
-      file: null,
-      dropped: false,
+      file: fileUploaded[0],
+      dropped: true,
     });
+
+    router.push("/image?" + response.body);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const fileUploaded = e.target.files;
+    if (!fileUploaded) {
+      dispatch({
+        type: "SET_IN_DROP_ZONE",
+        isDragging: false,
+        file: null,
+        dropped: false,
+      });
+      return;
+    }
+    const response = await getFile(fileUploaded, searchParams.toString());
+
+    if (response.error) {
+      dispatch({
+        type: "SET_IN_DROP_ZONE",
+        isDragging: false,
+        file: null,
+        dropped: false,
+      });
+      return;
+    }
+
+    dispatch({
+      type: "SET_IN_DROP_ZONE",
+      isDragging: false,
+      file: fileUploaded[0],
+      dropped: true,
+    });
+
+    router.push("/image?" + response.body);
   };
   return (
     <section className={styles.mainCard}>
@@ -127,7 +149,13 @@ export const MainCard = () => {
           </div>
           <span>or</span>
           <label htmlFor="file" className={styles.btn}>
-            <input type="file" name="file" id="file" hidden />
+            <input
+              type="file"
+              name="file"
+              id="file"
+              hidden
+              onChange={handleFileChange}
+            />
             Choose a file
           </label>
         </form>
