@@ -2,7 +2,8 @@
 import styles from "./page.module.css";
 import Image from "next/image";
 import reducerHook from "./hookReducer";
-import { useReducer } from "react";
+import LoadingCard from "../loading/loading";
+import { useReducer, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getFile } from "./utils";
 
@@ -12,6 +13,7 @@ export const MainCard = () => {
     file: null,
     isDragging: false,
   });
+  const [isloading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams()!;
 
@@ -66,8 +68,9 @@ export const MainCard = () => {
       });
       return;
     }
-    const response = await getFile(fileUploaded, searchParams.toString());
 
+    setIsLoading(true);
+    const response = await getFile(fileUploaded, searchParams.toString());
     if (response.error) {
       dispatch({
         type: "SET_IN_DROP_ZONE",
@@ -101,6 +104,7 @@ export const MainCard = () => {
       });
       return;
     }
+    setIsLoading(true);
     const response = await getFile(fileUploaded, searchParams.toString());
 
     if (response.error) {
@@ -122,7 +126,9 @@ export const MainCard = () => {
 
     router.push("/image?" + response.body);
   };
-  return (
+  return isloading ? (
+    <LoadingCard />
+  ) : (
     <section className={styles.mainCard}>
       <div className={styles.container}>
         <div className={styles.cardHeader}>
