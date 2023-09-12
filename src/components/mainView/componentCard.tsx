@@ -1,131 +1,12 @@
 "use client";
 import styles from "./page.module.css";
 import Image from "next/image";
-import reducerHook from "./hookReducer";
 import LoadingCard from "../loading/loading";
-import { useReducer, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { getFile } from "./utils";
+import useDragAndDrop from "./hookdrag";
 
 export const MainCard = () => {
-  const [data, dispatch] = useReducer(reducerHook, {
-    dropped: false,
-    file: null,
-    isDragging: false,
-  });
-  const [isloading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const { data, isloading, methods } = useDragAndDrop();
 
-  // onDragEnter sets inDropZone to true
-  const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch({
-      type: "SET_IS_DRAGGING",
-      dropped: false,
-      isDragging: true,
-      file: null,
-    });
-  };
-
-  // onDragLeave sets inDropZone to false
-  const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch({
-      type: "SET_IS_DRAGGING",
-      isDragging: false,
-      file: null,
-      dropped: false,
-    });
-  };
-
-  // onDragOver sets inDropZone to true
-  const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // console.log("over the zone");
-    // set dropEffect to copy i.e copy of the source item
-    e.dataTransfer.dropEffect = "copy";
-    // dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: true });
-  };
-
-  // onDrop sets inDropZone to false and adds files to fileList
-  const handleDrop = async (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // get files from event on the dataTransfer object as an array
-    const fileUploaded = e.dataTransfer.files;
-
-    // ensure a file or files are dropped
-    if (!fileUploaded) {
-      dispatch({
-        type: "SET_IN_DROP_ZONE",
-        isDragging: false,
-        file: null,
-        dropped: false,
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    const response = await getFile(fileUploaded, searchParams.toString());
-    if (response.error) {
-      dispatch({
-        type: "SET_IN_DROP_ZONE",
-        isDragging: false,
-        file: null,
-        dropped: false,
-      });
-      return;
-    }
-
-    dispatch({
-      type: "SET_IN_DROP_ZONE",
-      isDragging: false,
-      file: fileUploaded[0],
-      dropped: true,
-    });
-
-    router.push("/image?" + response.body);
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const fileUploaded = e.target.files;
-    if (!fileUploaded) {
-      dispatch({
-        type: "SET_IN_DROP_ZONE",
-        isDragging: false,
-        file: null,
-        dropped: false,
-      });
-      return;
-    }
-    setIsLoading(true);
-    const response = await getFile(fileUploaded, searchParams.toString());
-
-    if (response.error) {
-      dispatch({
-        type: "SET_IN_DROP_ZONE",
-        isDragging: false,
-        file: null,
-        dropped: false,
-      });
-      return;
-    }
-
-    dispatch({
-      type: "SET_IN_DROP_ZONE",
-      isDragging: false,
-      file: fileUploaded[0],
-      dropped: true,
-    });
-
-    router.push("/image?" + response.body);
-  };
   return isloading ? (
     <LoadingCard />
   ) : (
@@ -140,10 +21,10 @@ export const MainCard = () => {
             className={`${styles.area} ${
               data.isDragging ? styles["area--active"] : null
             }`}
-            onDragEnter={(e) => handleDragEnter(e)}
-            onDragOver={(e) => handleDragOver(e)}
-            onDragLeave={(e) => handleDragLeave(e)}
-            onDrop={(e) => handleDrop(e)}
+            onDragEnter={methods.handleDragEnter}
+            onDragOver={methods.handleDragOver}
+            onDragLeave={methods.handleDragLeave}
+            onDrop={methods.handleDrop}
           >
             <Image
               src="/image.svg"
@@ -160,7 +41,7 @@ export const MainCard = () => {
               name="file"
               id="file"
               hidden
-              onChange={handleFileChange}
+              onChange={methods.handleFileChange}
             />
             Choose a file
           </label>
