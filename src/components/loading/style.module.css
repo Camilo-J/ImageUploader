@@ -53,10 +53,11 @@
   }
 }
 
-/* Style for the Page */
-/* .mainContainer {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
+@media (max-width: 640px) {
+  .containerLoader {
+    width: 300px;
+  }
+  .containerCard {
+    width: 340px;
+  }
+}
