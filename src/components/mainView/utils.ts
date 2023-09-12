@@ -19,3 +19,41 @@ export async function getFile(file: FileList, searchParams: string) {
   }
   return { body: null, error: "File not Supported" };
 }
+
+export async function verifyFile(file: FileList | null, searchParams: string) {
+  if (!file) {
+    return {
+      state: {
+        type: "SET_IN_DROP_ZONE",
+        isDragging: false,
+        file: null,
+        dropped: false,
+      },
+      error: "No file selected",
+    };
+  }
+
+  const response = await getFile(file, searchParams);
+
+  if (response.error) {
+    return {
+      state: {
+        type: "SET_IN_DROP_ZONE",
+        isDragging: false,
+        file: null,
+        dropped: false,
+      },
+      error: response.error,
+    };
+  }
+
+  return {
+    state: {
+      type: "SET_IN_DROP_ZONE",
+      isDragging: false,
+      file: response,
+      dropped: true,
+    },
+    error: null,
+  };
+}
