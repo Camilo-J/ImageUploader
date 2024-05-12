@@ -9,11 +9,12 @@ export async function getFile(file: FileList, searchParams: string) {
     file[0]?.type === FileTypes.Png
   ) {
     newFormData.append("image", file[0]);
-    const response = await getUrl(newFormData);
 
-    if (response.body.error) return { body: null, error: response.body.error };
+    const response = await getUrl(file[0], file[0]?.type);
 
-    params.set("image", response.body.image_url);
+    if (response.body?.error) return { body: null, error: response.body.error };
+
+    params.set("image", response.image_url);
     params.toString();
     return { body: params, error: null };
   }
