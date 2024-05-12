@@ -5,9 +5,9 @@ import LoadingCard from "../loading/loading";
 import useDragAndDrop from "./hookdrag";
 
 export const MainCard = () => {
-  const { data, isloading, methods } = useDragAndDrop();
+  const { data, isLoading, methods } = useDragAndDrop();
 
-  return isloading ? (
+  return isLoading ? (
     <LoadingCard />
   ) : (
     <section className={styles.mainCard}>

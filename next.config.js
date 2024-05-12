@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost", "res.cloudinary.com"],
+    remotePatterns: [
+      {
+        hostname: process.env.FRONT_IMAGE_DOMAIN,
+      },
+    ],
   },
 };
 

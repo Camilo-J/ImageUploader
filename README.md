@@ -52,6 +52,7 @@ To get a local copy up and running follow these simple steps.
 
    ```sh
     NEXT_PUBLIC_API_URL= your backend url
+    FRONT_IMAGE_DOMAIN= your image domain
    ```
 
 4. Run the app

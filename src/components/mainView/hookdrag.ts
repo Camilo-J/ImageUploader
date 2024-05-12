@@ -10,7 +10,7 @@ function useDragAndDrop() {
     file: { body: null, error: null },
     isDragging: false,
   });
-  const [isloading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams()!;
   // onDragEnter sets inDropZone to true
@@ -88,7 +88,7 @@ function useDragAndDrop() {
 
   return {
     data,
-    isloading,
+    isLoading,
     methods: {
       handleDragEnter,
       handleDragLeave,
