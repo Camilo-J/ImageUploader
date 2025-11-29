@@ -22,7 +22,7 @@ You can try the app [here](https://nextjs.org/)(Deploying).
 - [Next.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [CSS Modules](https://nextjs.org/docs/app/building-your-application/styling/css-modules)
-- [Cloudinary](https://cloudinary.com/)
+- [AWS](https://aws.amazon.com/)
 - [Vercel](https://vercel.com/)
 
 ## Getting Started

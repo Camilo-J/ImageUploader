@@ -1,11 +1,8 @@
-import { ImageUploaded } from "@/components/cardSuccess/cardImage";
-import styles from "./page.module.css";
+import { ImageUploaded } from '@/components/cardSuccess/cardImage';
+import styles from './page.module.css';
 
-export default function CardContainer({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string };
-}) {
+export default async function CardContainer(props: { searchParams?: Promise<{ [key: string]: string }> }) {
+  const searchParams = await props.searchParams;
   if (!searchParams) {
     return;
   }
