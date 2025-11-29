@@ -61,6 +61,7 @@ function useDragAndDrop() {
       return setIsLoading(false);
     }
 
+    setIsLoading(false);
     router.push(`/image?${state.file.body}`);
   };
 
