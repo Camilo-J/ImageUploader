@@ -1,27 +1,27 @@
-import reducerHook from "./hookReducer";
-import { useReducer, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, DragEvent } from "./types";
-import { verifyFile } from "./utils";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useReducer, useState } from 'react';
+import reducerHook from './hookReducer';
+import type { ChangeEvent, DragEvent } from './types';
+import { verifyFile } from './utils';
 
 function useDragAndDrop() {
   const [data, dispatch] = useReducer(reducerHook, {
     dropped: false,
     file: { body: null, error: null },
-    isDragging: false,
+    isDragging: false
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   // onDragEnter sets inDropZone to true
   const handleDragEnter = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch({
-      type: "SET_IS_DRAGGING",
+      type: 'SET_IS_DRAGGING',
       dropped: false,
       isDragging: true,
-      file: null,
+      file: null
     });
   };
 
@@ -30,10 +30,10 @@ function useDragAndDrop() {
     e.preventDefault();
     e.stopPropagation();
     dispatch({
-      type: "SET_IS_DRAGGING",
+      type: 'SET_IS_DRAGGING',
       isDragging: false,
       file: null,
-      dropped: false,
+      dropped: false
     });
   };
 
@@ -42,7 +42,7 @@ function useDragAndDrop() {
     e.preventDefault();
     e.stopPropagation();
     // set dropEffect to copy i.e copy of the source item
-    e.dataTransfer.dropEffect = "copy";
+    e.dataTransfer.dropEffect = 'copy';
   };
 
   // onDrop sets inDropZone to false and adds files to fileList
@@ -54,17 +54,14 @@ function useDragAndDrop() {
     const fileUploaded = e.dataTransfer.files;
     setIsLoading(true);
     // ensure a file or files are dropped
-    const { state, error } = await verifyFile(
-      fileUploaded,
-      searchParams.toString()
-    );
+    const { state, error } = await verifyFile(fileUploaded, searchParams.toString());
 
     if (error || state.file === null) {
       dispatch(state);
       return setIsLoading(false);
     }
 
-    router.push("/image?" + state.file.body);
+    router.push(`/image?${state.file.body}`);
   };
 
   const handleFileChange = async (e: ChangeEvent) => {
@@ -73,17 +70,14 @@ function useDragAndDrop() {
     const fileUploaded = e.target.files;
     setIsLoading(true);
 
-    const { state, error } = await verifyFile(
-      fileUploaded,
-      searchParams.toString()
-    );
+    const { state, error } = await verifyFile(fileUploaded, searchParams.toString());
 
     if (error || state.file === null) {
       dispatch(state);
       return setIsLoading(false);
     }
 
-    router.push("/image?" + state.file.body);
+    router.push(`/image?${state.file.body}`);
   };
 
   return {
@@ -94,8 +88,8 @@ function useDragAndDrop() {
       handleDragLeave,
       handleDragOver,
       handleDrop,
-      handleFileChange,
-    },
+      handleFileChange
+    }
   };
 }
 

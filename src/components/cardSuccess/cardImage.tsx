@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import styles from "./page.module.css";
-import { useState } from "react";
+import Image from 'next/image';
+import { useState } from 'react';
+import styles from './page.module.css';
 
 export function ImageUploaded({ url }: { url: string }) {
   const [copy, setCopy] = useState(false);
 
   const onCopy = () => {
-    const input = document.querySelector("input");
+    const input = document.querySelector('input');
     if (input === null) return;
 
     input.select();
@@ -21,12 +21,7 @@ export function ImageUploaded({ url }: { url: string }) {
     <section className={styles.container}>
       <div className={styles.headerContainer}>
         <div className={styles.checkContainer}>
-          <Image
-            src="check-svgrepo-com.svg"
-            width={30}
-            height={30}
-            alt="icon-check"
-          />
+          <Image src="check-svgrepo-com.svg" width={30} height={30} alt="icon-check" />
         </div>
         <p>Upload Succesfull!</p>
       </div>
@@ -35,11 +30,8 @@ export function ImageUploaded({ url }: { url: string }) {
       </div>
       <div className={styles.containerInput}>
         <input className={styles.input} type="text" value={url} disabled />
-        <button
-          className={`${styles.button} ${copy ? styles["button--active"] : ""}`}
-          onClick={onCopy}
-        >
-          {copy ? "Copied!" : "Copy Link"}
+        <button type="button" className={`${styles.button} ${copy ? styles['button--active'] : ''}`} onClick={onCopy}>
+          {copy ? 'Copied!' : 'Copy Link'}
         </button>
       </div>
     </section>
