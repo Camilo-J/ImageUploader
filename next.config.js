@@ -1,12 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        hostname: process.env.FRONT_IMAGE_DOMAIN,
-      },
-    ],
-  },
+    remotePatterns: [{ hostname: process.env.FRONT_IMAGE_DOMAIN }],
+    unoptimized: true
+  }
 };
 
 module.exports = nextConfig;
