@@ -23,9 +23,8 @@ export const MainCard = () => {
             onDragOver={methods.handleDragOver}
             onDragLeave={methods.handleDragLeave}
             onDrop={methods.handleDrop}
-            tabIndex={0}
-            aria-label="Drag and drop your image here"
             type="button"
+            aria-label="Drag and drop your image here"
           >
             <Image src="/image.svg" loading="eager" width={114} height={88} alt="logo-Drag&Drop" />
             <span>Drag & Drop your image here</span>
